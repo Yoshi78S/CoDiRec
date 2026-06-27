@@ -185,7 +185,7 @@ def parse_args():
         parser.add_argument("--echo_sa_r", default=0, type=int,
                             help="two-path attention: 0=single; r>0 reverse last r items for 2nd path; -1=full reverse")
 
-    elif args.model_type.lower() in ('echocodiremb', 'echocodirscore'):
+    elif args.model_type.lower() == 'codirec':
         parser.add_argument("--d_state", default=16, type=int, help="Mamba state dimension")
         parser.add_argument("--d_conv", default=4, type=int, help="Mamba conv kernel size")
         parser.add_argument("--expand", default=2, type=int, help="Mamba expansion factor")

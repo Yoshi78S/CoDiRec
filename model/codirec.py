@@ -1,4 +1,4 @@
-"""Model B: EchoCoDirScore — inject co-occurrence & directional priors as SCORES.
+"""Model B: CoDiRec — inject co-occurrence & directional priors as SCORES.
 
 Role-matched injection (per the symmetric/antisymmetric split):
   - CO-OCCURRENCE C (symmetric, PPMI) -> additive PAIRWISE BIAS on the
@@ -75,7 +75,7 @@ class BiasedMultiHeadAttention(nn.Module):
         return self.LayerNorm(self.out_dropout(self.dense(ctx)) + x)
 
 
-class CoDirScoreLayer(nn.Module):
+class CoDiRecLayer(nn.Module):
     def __init__(self, args):
         super().__init__()
         d = args.hidden_size
@@ -119,7 +119,7 @@ class CoDirScoreLayer(nn.Module):
         return self.glu(g * m + (1.0 - g) * a)
 
 
-class EchoCoDirScoreModel(SequentialRecModel):
+class CoDiRecModel(SequentialRecModel):
     def __init__(self, args):
         super().__init__(args)
         if not _MAMBA_AVAILABLE:
@@ -136,7 +136,7 @@ class EchoCoDirScoreModel(SequentialRecModel):
         self.register_buffer("C", torch.tensor(C.toarray(), dtype=torch.float32))   # (V,V) symmetric PPMI
         self.register_buffer("D", torch.tensor(D.toarray(), dtype=torch.float32))   # (V,V) antisymmetric
 
-        self.layers = nn.ModuleList([CoDirScoreLayer(args)
+        self.layers = nn.ModuleList([CoDiRecLayer(args)
                                      for _ in range(args.num_hidden_layers)])
         self.apply(self.init_weights)
 

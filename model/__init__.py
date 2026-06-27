@@ -1,5 +1,5 @@
-from model.echo_codir_score import EchoCoDirScoreModel
+from model.codirec import CoDiRecModel
 
 MODEL_DICT = {
-    "echocodirscore": EchoCoDirScoreModel,
+    "codirec": CoDiRecModel,
 }

@@ -6,9 +6,9 @@
 逐次推薦において、(1) **共起バイアス**（対称：どのアイテムが一緒に出るか）と (2) **方向バイアス**
 （反対称：A の後に B が来やすい precedence）は、データに強く存在し予測的でありながら、標準的な
 モデルには暗黙的・不完全にしか取り込まれない。本リポジトリは、この2つの関係構造を **学習データから
-構築した事前情報として明示的に注入**する逐次推薦モデル **EchoCoDirScore** を提供する。
+構築した事前情報として明示的に注入**する逐次推薦モデル **CoDiRec** を提供する。
 
-## モデル構成 (`model/echo_codir_score.py`)
+## モデル構成 (`model/codirec.py`)
 
 バックボーン = FFT 周波数フィルタ → 双方向 Mamba ∥ 自己注意 をゲート融合 → GLU。
 そこに2つの事前情報を **対称性に応じて役割整合的に**注入する：
@@ -31,7 +31,7 @@
 ```
 main.py / trainers.py / utils.py / dataset.py / metrics.py   # 学習・評価パイプライン
 model/
-  echo_codir_score.py   # 提案モデル EchoCoDirScore（本体）
+  codirec.py   # 提案モデル CoDiRec（本体）
   cooc_dir.py           # 共起 C・方向 D 行列／系列拡張の関連アイテム構築
   echomamba4rec.py      # バックボーン部品（FilterLayer, GLU 等）
   _abstract_model.py / _modules.py
@@ -46,7 +46,7 @@ model/
 ## 実行例（各データセットの best HP）
 ```bash
 # ML-1M
-python main.py --model_type EchoCoDirScore --train_name codir_ml1m --data_name ML-1M \
+python main.py --model_type CoDiRec --train_name codir_ml1m --data_name ML-1M \
   --lr 0.001 --d_state 16 --num_hidden_layers 2 --hidden_dropout_prob 0.2 --attention_probs_dropout_prob 0.2 \
   --d_conv 4 --expand 2 --hidden_size 64 --num_attention_heads 1 \
   --batch_size 256 --epochs 200 --patience 10 --seed 42 \
